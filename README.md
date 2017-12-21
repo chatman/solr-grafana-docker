@@ -16,3 +16,8 @@ docker-compose up
 
 # Refresh the dashboard
 ```
+
+Screenshot
+----------
+![solr_dashboard](screenshot.png "Solr Dashboard")
+

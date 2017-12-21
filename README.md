@@ -9,3 +9,7 @@ Steps to run
 3. Click the "Solr dashboard"
 4. Start ./indexing.sh (and, optionally, ./querying.sh)
 5. Refresh the dashboard (an icon on top right)
+
+Screenshot
+----------
+![solr_dashboard](screenshot.png "Solr Dashboard")

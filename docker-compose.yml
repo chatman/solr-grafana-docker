@@ -1,0 +1,74 @@
+version: "3.2"
+
+services:
+  zk1:
+    image: jplock/zookeeper:3.4.10
+    ports:
+      - "2181:2181"
+  solr1:
+    image: solr:7.1
+    ports:
+      - "8983:8983"
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+      - ./grafana-register.sh:/opt/grafana-register.sh
+      - ./solr-dashboard.json:/opt/solr-dashboard.json
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0 && /usr/bin/wait-for-it.sh -h influxdb -p 8086 -t 0 && /usr/bin/wait-for-it.sh -h grafana -p 3000 -t 0 && cd /opt && /opt/grafana-register.sh; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    links:
+      - influxdb
+      - grafana
+  solr2:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    links:
+      - influxdb
+
+  solr3:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    links:
+      - influxdb
+
+  solr4:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    links:
+      - influxdb
+
+  influxdb:
+    image: influxdb:latest
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "8090:8090"
+        #env_file:
+        #- 'env.influxdb'
+
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+        #env_file:
+        #- 'env.grafana'
+    links:
+      - influxdb
+

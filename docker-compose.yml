@@ -16,7 +16,7 @@ services:
       - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
       - ./grafana-register.sh:/opt/grafana-register.sh
       - ./solr-dashboard.json:/opt/solr-dashboard.json
-    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0 && /usr/bin/wait-for-it.sh -h influxdb -p 8086 -t 0 && /usr/bin/wait-for-it.sh -h grafana -p 3000 -t 0 && cd /opt && /opt/grafana-register.sh; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0 && /usr/bin/wait-for-it.sh -h influxdb -p 8086 -t 0 && /usr/bin/wait-for-it.sh -h grafana -p 3000 -t 0 && cd /opt && /opt/grafana-register.sh; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
     links:
       - influxdb
       - grafana
@@ -27,7 +27,7 @@ services:
       - ./solr.xml:/opt/solr/server/solr/solr.xml
       - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
       - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
-    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
     links:
       - influxdb
 
@@ -38,7 +38,7 @@ services:
       - ./solr.xml:/opt/solr/server/solr/solr.xml
       - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
       - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
-    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
     links:
       - influxdb
 
@@ -49,7 +49,68 @@ services:
       - ./solr.xml:/opt/solr/server/solr/solr.xml
       - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
       - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
-    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -f -z zk1:2181 -m 4g"
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
+    links:
+      - influxdb
+
+  solr5:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
+    links:
+      - influxdb
+  solr6:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
+    links:
+      - influxdb
+  solr7:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
+    links:
+      - influxdb
+  solr8:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
+    links:
+      - influxdb
+  solr9:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
+    links:
+      - influxdb
+  solr10:
+    image: solr:7.1
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./solr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zk1 -p 2181 -t 0; /opt/solr/bin/solr -c -z zk1:2181 -m 4g; tail -f /opt/solr/server/logs/solr.log"
     links:
       - influxdb
 

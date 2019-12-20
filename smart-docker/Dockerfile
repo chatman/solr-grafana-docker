@@ -55,7 +55,7 @@ RUN apt-get update && \
 #COPY scripts /opt/docker-solr/scripts
 #RUN chown -R 0:0 /opt/docker-solr/scripts
 
-COPY solr-master.tgz /opt/solr-9.0.0-SNAPSHOT.tgz
+COPY smart.tgz /opt/solr-9.0.0-SNAPSHOT.tgz
 
 RUN tar -xvf /opt/solr-9.0.0-SNAPSHOT.tgz && mv solr-9.0.0-SNAPSHOT /opt/solr && ls /opt/solr
 

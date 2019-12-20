@@ -78,3 +78,53 @@ services:
     links:
       - influxdb
 
+  zksmart:
+    image: jplock/zookeeper:3.4.10
+  smart1:
+    build: smart-docker
+    ports:
+      - "7574:8983"
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./smartsolr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+      - ./grafana-register-smart.sh:/opt/grafana-register-smart.sh
+      - ./solr-dashboard.json:/opt/solr-dashboard.json
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zksmart -p 2181 -t 0 && /usr/bin/wait-for-it.sh -h influxdb -p 8086 -t 0 && /usr/bin/wait-for-it.sh -h grafana -p 3000 -t 0 && cd /opt && /opt/grafana-register-smart.sh; /opt/solr/bin/solr -c -force -f -z zksmart:2181 -m 4g -Dhost=smart1"
+    links:
+      - influxdb
+      - grafana
+  smart2:
+    build: smart-docker
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./smartsolr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zksmart -p 2181 -t 0; /opt/solr/bin/solr -c -force -f -z zksmart:2181 -m 4g -Dhost=smart2"
+    links:
+      - influxdb
+
+  smart3:
+    build: smart-docker
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./smartsolr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zksmart -p 2181 -t 0; /opt/solr/bin/solr -c -force -f -z zksmart:2181 -m 4g -Dhost=smart3"
+    links:
+      - influxdb
+
+  smart4:
+    build: smart-docker
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./smartsolr.xml:/opt/solr/server/solr/solr.xml
+      - ./solr-influxdb-reporter.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/solr-influxdb-reporter.jar
+      - ./metrics-influxdb-0.9.3.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/metrics-influxdb-0.9.3.jar
+    command: /bin/bash -c "/usr/bin/wait-for-it.sh -h zksmart -p 2181 -t 0; /opt/solr/bin/solr -c -force -f -z zksmart:2181 -m 4g -Dhost=smart4"
+    links:
+      - influxdb
+
